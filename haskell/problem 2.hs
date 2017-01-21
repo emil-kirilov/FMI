@@ -1,5 +1,3 @@
---special::Integer
-
 prime n = prime' n 2 
 
 prime' n k 
@@ -19,6 +17,7 @@ notSpecial = removeDuplicates $ touplesToNumbers [(i, j) | i <- [2..99], prime i
                                                            not (prime (i + 2 * j * j)), 100 > i + 2 * j * j, 9 < i + 2 * j * j]   
 
 --odd, complex
-special = [ i | i <- [11,13..99], not (prime i)] 
+potentiallySpecial = [ i | i <- [11,13..99], not (prime i)] 
                                                            
-numberOfSpecials = length notSpecial - length notSpecial 
+numberOfSpecials::Int
+numberOfSpecials = length notSpecial - length potentiallySpecial 
