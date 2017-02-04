@@ -13,11 +13,59 @@
       </fo:layout-master-set>
       <fo:page-sequence master-reference="A4-portrait">
         <fo:flow flow-name="xsl-region-body">
-          <fo:block>
-            Hello, <xsl:value-of select="cookbook/recipe/title"/>!
+          <fo:block font-family="Calibri" linefeed-treatment="preserve">
+            <xsl:apply-templates select="cookbook/recipes/recipe"/>
           </fo:block>
         </fo:flow>
       </fo:page-sequence>
     </fo:root>
   </xsl:template>
+
+  <xsl:template match="cookbook/recipes/recipe">
+    <xsl:value-of select="unparsed-entity-uri(@photo)" />
+    <xsl:apply-templates select="title" />
+    Регион: <xsl:value-of select="@regionID" />
+    <xsl:apply-templates select="ingredients" />
+    <xsl:apply-templates select="preparation" />
+    <xsl:apply-templates select="comment" />
+    <xsl:apply-templates select="nutrition" />
+    ----
+  </xsl:template>
+
+  <xsl:template match="title">
+    Име на рецептата: <xsl:value-of select="." />
+  </xsl:template>
+
+  <xsl:template match="ingredients">
+    Съставки: <xsl:apply-templates select="ingredient" />
+  </xsl:template>
+
+  <xsl:template match="ingredient">
+    • <xsl:value-of select="@amount" />
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="@unit" />
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="@name" />
+  </xsl:template>
+
+  <xsl:template match="preparation">
+    Приготвяне: <xsl:apply-templates select="step" />
+  </xsl:template>
+
+  <xsl:template match="step">
+    <xsl:value-of select="." /><xsl:text> </xsl:text>
+  </xsl:template>
+
+  <xsl:template match="comment">
+    Коментар: <xsl:value-of select="." />
+  </xsl:template>
+
+  <xsl:template match="nutrition">
+    Медицински параметри:
+    • калории: <xsl:value-of select="@calories" />
+    • въглехидрати: <xsl:value-of select="@carbohydrates" />
+    • протеини: <xsl:value-of select="@protein" />
+    • мазнини: <xsl:value-of select="@fat" />
+  </xsl:template>
+
 </xsl:stylesheet>
