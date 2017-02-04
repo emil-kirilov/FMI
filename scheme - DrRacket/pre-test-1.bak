@@ -1,0 +1,30 @@
+#lang racket
+(define (filter p? l)
+  (cond ((null? l) l)
+        ((p? (car l)) (cons (car l) (filter p? (cdr l))))
+             (else (filter p? (cdr l)))))
+
+
+(define (foldr op nv l)
+  (if (null? l) l
+      (op (car l) (foldr op nv (cdr l)))))
+
+(define (foldl op nv l)
+  (if (null? l) l
+      (foldl op (op nv (car l)) (cdr l))))
+
+(define (length l)
+  (if (null? l) 0
+      (+ 1 (length (cdr l)))))
+
+(define (nth l index)
+  (if (null? l)
+      #f
+      (if (= index 0)
+          (car l)
+          (nth list (- index 1)))))
+
+(define (map f l)
+  (if (null? l)
+      l
+      (cons (f (car l)) (map f (cdr l)))))
