@@ -1,7 +1,7 @@
 divisorsOf n k
   | n < 1            = error "invalid input"
   | n == 1           = []
-  | n `rem` k == 0   = [k] ++ divisorsOf (n `div` k) k
+  | n `rem` k == 0   = k : divisorsOf (n `div` k) k
   | otherwise        = divisorsOf n (k + 1)
 
 occurrences el list 
