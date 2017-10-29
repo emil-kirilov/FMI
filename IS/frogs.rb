@@ -1,62 +1,66 @@
-class Frogs
-  def solve
-    print 'Enter the number of frogs per side (n > 2): '
-    frogs_per_side = gets.to_i
+module Frogs
 
-    free_rock = frogs_per_side
-    state = start_state(frogs_per_side)
+  POSSIBLE_STEPS = [-2, -1, 1, 2]
 
-    rec(state, free_rock, [state]).each { |state| p state.join('') }
-  end
+  class << self
 
-  def rec(state, free_rock, states)
-    next_states(state, free_rock).each do |state_info|
-      new_states = states.clone
+    def solve
+      print 'Enter the number of frogs per side: '
 
-      break if @solution
+      free_rock = frogs_per_side = gets.to_i
 
-      new_state, next_rock_position = state_info
-      new_states << new_state
+      state = start_state(frogs_per_side)
 
-      solution(new_states) if new_state == end_state
-      next if dead_end?(new_state)
-
-      rec(new_state, next_rock_position, new_states)
+      rec(state, free_rock, [state]).each { |state| p state.join('') }
     end
 
-    @solution
-  end
+    def rec(state, free_rock, states)
+      next_states(state, free_rock).each do |state_info|
+        break if @solution
 
-  def next_states(current_state, free_rock)
-    states_info = []
+        new_state, next_rock_position = state_info
 
-    [-2, -1, 1, 2].each do |step|
-      next_rock_position = free_rock + step
+        new_states = states.clone
+        new_states << new_state
 
-      if next_rock_position >= 0 && next_rock_position < current_state.size
-        next if step > 0 && current_state[next_rock_position] == '>'
-        next if step < 0 && current_state[next_rock_position] == '<'
-        states_info << [current_state.swap(free_rock, next_rock_position), next_rock_position]
+        solution(new_states) if new_state == end_state
+        next if dead_end?(new_state)
+
+        rec(new_state, next_rock_position, new_states)
+      end
+
+      @solution
+    end
+
+    def next_states(current_state, free_rock)
+      [].tap do |states_info|
+        POSSIBLE_STEPS.each do |step|
+          next_rock_position = free_rock + step
+
+          next if next_rock_position < 0 || next_rock_position >= current_state.size
+          next if step > 0 && current_state[next_rock_position] == '>'
+          next if step < 0 && current_state[next_rock_position] == '<'
+
+          states_info << [current_state.swap(free_rock, next_rock_position), next_rock_position]
+        end
       end
     end
 
-    states_info
-  end
+    def dead_end?(state)
+      state.join('') =~ /.+<<_>>.+|^_>>.+|^<_>>.+|.+<<_>$|.+<<_$/
+    end
 
-  def dead_end?(state)
-    state.join('') =~ /.+<<_>>.+|^_>>.+|^<_>>.+|.+<<_>$|.+<<_$/
-  end
+    def start_state(frogs_per_side)
+      @start_state ||= ('>' * frogs_per_side + '_' + '<' * frogs_per_side).chars
+    end
 
-  def start_state(frogs_per_side)
-    @start_state ||= ('>' * frogs_per_side + '_' + '<' * frogs_per_side).chars
-  end
+    def end_state
+      @end_state ||= @start_state.reverse
+    end
 
-  def end_state
-    @end_state ||= @start_state.reverse
-  end
-
-  def solution(states)
-    @solution ||= states
+    def solution(states)
+      @solution ||= states
+    end
   end
 end
 
@@ -68,4 +72,4 @@ class Array
   end
 end
 
-Frogs.new().solve
+Frogs::solve
